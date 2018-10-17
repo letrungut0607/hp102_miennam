@@ -4,20 +4,23 @@ namespace App\Http\Controllers\AdminCP;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Repository\HopDongRepository;
 
 class HopDongController extends Controller
 {
   protected $template = '';
 
-  public function __construct()
+  protected $repository = '';
+
+  public function __construct(HopDongRepository $repository)
   {
     $this->template['title'] = 'Hợp đồng';
     $this->template['title-breadcrumb'] = 'Hợp đồng';
+    $this->repository = $repository;
   }
   public function index()
   {
   	$template = $this->template;
-    $template['form-datatable'] = true;
     $template['breadcrumbs'] = [
       [
         'name' => 'Hợp đồng',
@@ -50,5 +53,29 @@ class HopDongController extends Controller
     ];
 
     return view('back.hopdong.create', compact('template'));
+  }
+
+  public function update($id) {
+    $template = $this->template;
+    $template['breadcrumbs'] = [
+      [
+        'name' => 'Hợp đồng',
+        'link' => route('admin.hopdong.index'),
+        'active' => false
+      ],
+      [
+        'name' => 'Chỉnh sửa',
+        'link' => '',
+        'active' => true
+      ],
+    ];
+
+    $hopdong = $this->repository->find($id);
+    if($hopdong->nhanvien_id != getNhanVienID() && $hopdong->trangthai == 'Chưa gửi')
+      return redirect()->back();
+    if($hopdong->nhanvien_id != getNhanVienID() && getQuyenNhanVien() != 1)
+      return redirect()->back();
+
+    return view('back.hopdong.update', compact('template', 'hopdong'));
   }
 }

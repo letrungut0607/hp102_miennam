@@ -58,3 +58,90 @@ if(!function_exists('getNhanVienID'))
 		return Auth::id();
 	}
 }
+
+
+if(!function_exists('getQuyenNhanVien'))
+{
+	function getQuyenNhanVien()
+	{
+		return Auth::user()->phanquyen;
+	}
+}
+
+
+if(!function_exists('isAdminCP'))
+{
+	function isAdminCP()
+	{
+		return Auth::user()->phanquyen == 1 ? true : false;
+	}
+}
+
+
+if(!function_exists('formatDateTimeData'))
+{
+	function formatDateTimeData($date, $format = 'd-m-Y H:i:s')
+	{
+		if($date == null)
+			return date($format, strtotime(date($format)));
+		return date($format, strtotime($date));
+	}
+}
+
+
+if(!function_exists('formatDateSqlData'))
+{
+	function formatDateSqlData($date)
+	{
+		if($date == null)
+			return date('Y-m-d', strtotime(date($format)));
+		dd($date);
+		$dates = explode('/', $date);
+		$data = $dates[2].'/'.$dates[1].'/'.$dates[0];
+		return $data;
+	}
+}
+
+
+if(!function_exists('getFristDayOfMonth'))
+{
+	function getFristDayOfMonth()
+	{
+		$date = date('Y-m-d');
+		return date("Y-m-01", strtotime($date));
+	}
+}
+
+if(!function_exists('getLastDayOfMonth'))
+{
+	function getLastDayOfMonth()
+	{
+		$date = date('Y-m-d');
+		return date("Y-m-t", strtotime($date));
+	}
+}
+
+if(!function_exists('renderMaNV'))
+{
+	function renderMaNV($user_id)
+	{
+		$ma_nv = "NV";
+		switch (strlen($user_id)){
+			case 1: $ma_nv .= "00000" .  $user_id;
+					break;
+			case 2: $ma_nv .= "0000" .  $user_id;
+					break;
+			case 3: $ma_nv .= "000" .  $user_id;
+					break;
+			case 4: $ma_nv .= "00" .  $user_id;
+					break;
+			case 5: $ma_nv .= "0" .  $user_id;
+					break;
+			case 6: $ma_nv .= $user_id;
+					break;
+			default:
+				break;
+		}
+		return $ma_nv;
+	}
+}

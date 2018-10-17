@@ -108,13 +108,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
 
   public function update($attributes, $id)
   {
-    $model = $this->model->find($id);
-
-    if(!$model)
-    {
-      return false;
-    }
-
+    $model = $this->model->where(['id' => $id]);
     $model->update($attributes);
     return $model;
   }
@@ -135,7 +129,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
   {
     $this->applyConditions($where);
     $deleted = $this->model->delete();
-    return $delete;
+    return $deleted;
   }
 
   public function orderBy($column, $direction = 'asc')

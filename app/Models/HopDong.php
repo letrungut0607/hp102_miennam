@@ -9,8 +9,36 @@ class HopDong extends Model
 {
   protected $table = 'hopdong';
 
-  public function nhanVien($value='')
+  protected $guarded = ['*'];
+
+  public function nhanvien()
   {
-  	$this->belongsTo(Nhanvien::class);
+  	return $this->belongsTo(NhanVien::class);
+  }
+
+  public function remove()
+  {
+    $this->deleted = 1;
+    $this->save();
+  }
+
+  public function trangthaiduyet()
+  {
+  	$trangthai = 0;
+  	switch ($this->trangthai) {
+  		case 'Đã duyệt':
+  			$trangthai = 1;
+  			break;
+  		case 'Chưa gửi':
+  			$trangthai = 0;
+  			break;
+  		case 'Gửi duyệt':
+  			$trangthai = 2;
+  			break;
+  		default:
+  			$trangthai = 0;
+  			break;
+  	}
+  	return $trangthai;
   }
 }

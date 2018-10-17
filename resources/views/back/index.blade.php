@@ -75,7 +75,7 @@ var chartHome = new Chart(ctx, {
           </div>
           <div class="row">
             <div class="col-md-9">
-              <canvas id="chart-home"></canvas>
+              <canvas id="chart-home" height="120"></canvas>
             </div>
             <div class="col-md-3">
               <div class="row">

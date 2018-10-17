@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateHopDongRequest extends FormRequest
+class HopDongRequest extends FormRequest
 {
   public function authorize()
   {
@@ -13,27 +13,34 @@ class CreateHopDongRequest extends FormRequest
 
   public function rules()
   {
-    return [
-      'sohopdong' => 'required|unique:hopdong',
-      'tenhopdong' => 'required|min:5',
-      'giatri' => 'required|integer|min:0',
-      'tenkhachhang' => 'required|min:3',
-      'sodienthoai' => 'required|min:10|max:11',
-      'sodienthoai' => 'regex:/^\+?\d{1,3}?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\d\d$/',
-      'email' => 'required|email',
-      'diachi' => 'required|min:5'
-    ];
+    $id = isset($this->id) ? ',sohopdong,' . $this->id : '';
+    $rules = [];
+    $rules['sohopdong'] = 'required|regex:/^[A-Za-z0-9-_+]+$/|unique:hopdong' . $id;
+    $rules['tenhopdong'] = 'required|min:5';
+    $rules['giatri'] = 'required|numeric|min:0';
+    $rules['tenkhachhang'] = 'required|min:3';
+    $rules['sodienthoai'] = 'required|min:10|max:11';
+    $rules['email'] = 'required|email';
+    $rules['diachi'] = 'required|min:5';
+    if (isset($this->id)) {
+      $rules['dinhkem.*'] = 'nullable|mimetypes:image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/png';
+    } else {
+      $rules['dinhkem.*'] = 'mimetypes:image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/png';
+    }
+    
+    return $rules;
   }
 
   public function messages()
   {
     return [
       'sohopdong.required' => 'Vui lòng nhập số hợp đồng',
+      'sohopdong.regex' => 'Số hợp đồng chỉ có thể chứa chữ cái, số và các ký tự - + _.',
       'sohopdong.unique' => 'Số hợp đồng vừa nhập đã tồn tại',
       'tenhopdong.required' => 'Vui lòng nhập tên hợp đồng',
       'tenhopdong.min' => 'Vui lòng nhập tên hợp đồng từ 5 ký tự',
       'giatri.required' => 'Vui lòng nhập giá trị của hợp đồng',
-      'giatri.integer' => 'Giá trị của hợp đồng là số',
+      'giatri.numeric' => 'Giá trị của hợp đồng là số',
       'giatri.min' => 'Giá trị của hợp đồng là số lớn hơn 0',
       'tenkhachhang.required' => 'Vui lòng nhập tên khách hàng',
       'tenkhachhang.min' => 'Tên khách hàng phải từ 3 ký tự',
@@ -44,7 +51,8 @@ class CreateHopDongRequest extends FormRequest
       'email.required' => 'Vui lòng nhập email',
       'email.email' => 'Email không hợp lệ',
       'diachi.required' => 'Vui lòng nhập địa chỉ',
-      'diachi.min' => 'Địa chỉ phải từ 5 ký tự'
+      'diachi.min' => 'Địa chỉ phải từ 5 ký tự',
+      'dinhkem.*.mimetypes' => 'File đính kèm không hợp lệ'
     ];
   }
 }
